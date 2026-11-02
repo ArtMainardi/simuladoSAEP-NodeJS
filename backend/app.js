@@ -1,5 +1,6 @@
 const express = require("express");
 const server = express();
+const connection = require("./db");
 
 // Configuração do Express:
 server.use(express.json());
