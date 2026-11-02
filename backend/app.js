@@ -10,3 +10,14 @@ const PORTA = 8050;
 server.listen(PORTA, () => {
     console.log(`Servidor ligado na porta ${PORTA}`);
 });
+
+// Endereços para 'USUARIOS':
+server.get("/usuarios", (req, res) => {
+    sql = "SELECT * FROM USUARIO";
+    connection.query(sql, (error, result) => {
+       if(error){
+           return res.status(500).json({ error : error.message });
+       }
+       return res.json(result);
+    });
+});
