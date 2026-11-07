@@ -11,6 +11,12 @@ server.listen(PORTA, () => {
     console.log(`Servidor ligado na porta ${PORTA}`);
 });
 
+// Configuração do MiddleWare:
+server.use((req, res, next) => {
+   console.log(`${req.method} [${req.url}]`);
+   return next();
+});
+
 // === Endereços para 'USUARIOS' ===
 // Selecionar todos os usuários:
 server.get("/usuarios", (req, res) => {
