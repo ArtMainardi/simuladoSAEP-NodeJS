@@ -28,3 +28,14 @@ server.get("/usuarios", (req, res) => {
        return res.json(result);
     });
 });
+// Buscar por um usuário pelo ID:
+server.get("/usuario/:id", (req, res) => {
+   sql = "SELECT * FROM USUARIO WHERE ID = ?";
+   const id = req.params.id;
+   connection.query(sql, [id], (error, result) => {
+       if(error){
+           return res.status(500).json({ error : error.message });
+       }
+       return res.json(result);
+   });
+});
