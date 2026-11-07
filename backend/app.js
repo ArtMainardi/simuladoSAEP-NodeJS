@@ -1,6 +1,7 @@
 const express = require("express");
 const server = express();
 const connection = require("./db");
+const bcrypt = require("bcryptjs");
 
 // Configuração do Express:
 server.use(express.json());
@@ -38,4 +39,20 @@ server.get("/usuario/:id", (req, res) => {
        }
        return res.json(result);
    });
+});
+// Realizar login:
+server.post("/usuario/login", async (req, res) => {
+    const sql = "SELECT * FROM USUARIO WHERE username = ?";
+    const username = req.body.username;
+    const password = req.body.senha;
+    connection.query(sql, [username], async (error, result) => {
+       if(error){
+           return res.status(500).json({ error : error.message });
+       }
+       const passwordVerify = await bcrypt.compare(password, result[0].senha_criptografada);
+       if(result.length == 0 || !passwordVerify){
+           return res.status(500).json({ error: "Usuário ou senha incorretos." })
+       }
+       return res.json(result);
+    });
 });
