@@ -49,14 +49,17 @@ server.post("/usuario/login", async (req, res) => {
     const username = req.body.username;
     const password = req.body.senha;
     connection.query(sql, [username], async (error, result) => {
-       if(error){
-           return res.status(500).json({ error : error.message });
-       }
-       const passwordVerify = await bcrypt.compare(password, result[0].senha_criptografada);
-       if(result.length == 0 || !passwordVerify){
-           return res.status(500).json({ error: "Usuário ou senha incorretos." })
-       }
-       return res.json(result);
+        if(error){
+            return res.status(500).json({ error : error.message });
+        }
+        if(result.length == 0){
+            return res.status(500).json({ error: "Usuário ou senha incorretos." })
+        }
+        const passwordVerify = await bcrypt.compare(password, result[0].senha_criptografada);
+        if(!passwordVerify){
+            return res.status(500).json({ error: "Usuário ou senha incorretos." })
+        }
+        return res.json(result[0]);
     });
 });
 // Criar usuário:
