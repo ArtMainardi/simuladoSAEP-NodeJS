@@ -1,7 +1,10 @@
 const express = require("express");
 const server = express();
+// --
 const connection = require("./db");
+// --
 const bcrypt = require("bcryptjs");
+const saltRounds = 10;
 
 // Configuração do Express:
 server.use(express.json());
@@ -55,4 +58,16 @@ server.post("/usuario/login", async (req, res) => {
        }
        return res.json(result);
     });
+});
+// Criar usuário:
+server.post("/usuario", async (req, res) => {
+   const { username, senha } = req.body;
+   const senhaCriptografada = await bcrypt.hash(senha, saltRounds);
+   const sql = "INSERT INTO USUARIO(username, senha_criptografada) VALUES(?, ?)";
+   connection.query(sql, [username, senhaCriptografada], (error, result) => {
+      if(error) {
+          return res.status(500).json({error: error.message});
+      }
+      return res.json(result);
+   });
 });
